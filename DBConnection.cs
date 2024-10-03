@@ -39,7 +39,7 @@ namespace BTL
                 {
                     try
                     {
-                        da.SelectCommand = new SqlCommand(sqlSelect, cnn);
+                        da.SelectCommand = cnn.BuildSelectCommand(table);
                         cnn.Open();
                         da.Fill(_dataSet, table);
                         cnn.Close();
@@ -54,7 +54,7 @@ namespace BTL
             return _dataSet.Tables[table];
         }
 
-        public bool InsertDB(string table,string nameProc,params DBParameter[] sqlParameters)
+        public bool InsertDB(string table, string nameProc,params DBParameter[] sqlParameters)
         {
             DataTable dt = _dataSet.Tables[table];
             if (_dataSet.Tables[table] == null)
@@ -66,20 +66,13 @@ namespace BTL
             {
                 using (SqlDataAdapter da = new SqlDataAdapter())
                 {
-                    using (SqlCommand cmd = cnn.CreateCommand())
+                    using (SqlCommand cmd = cnn.BuildInsertProc(nameProc, sqlParameters))
                     {
                         try
                         {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.CommandText = nameProc;
-                            foreach (DBParameter p in sqlParameters)
-                            {
-                                if (p.IsIdentity) continue;
-                                cmd.Parameters.Add(p.SqlParameter);
-                            }
                             da.InsertCommand = cmd;
                             DataRow newRow = dt.NewRow();
-                            for (int j =  0; j < sqlParameters.Length; j++)
+                            for (int j = 0; j < sqlParameters.Length; j++)
                             {
                                 DBParameter p = sqlParameters[j];
                                 if (p.IsIdentity)
@@ -88,9 +81,6 @@ namespace BTL
                                     continue;
                                 }
                                 newRow[p.SqlParameter.SourceColumn] = p.Value;
-                            }
-                            foreach (DBParameter p in sqlParameters)
-                            {
                             }
                             dt.Rows.Add(newRow);
                             cnn.Open();
@@ -101,6 +91,47 @@ namespace BTL
                         catch (Exception ex)
                         {
                             throw new Exception("Lỗi insert DataBase : " + ex.Message);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        public bool UpdateDB(string table, DBParameter condition, params DBParameter[] sqlParameters)
+        {
+            DataTable dt = _dataSet.Tables[table];
+            if (_dataSet.Tables[table] == null)
+            {
+                dt = SelectDB(table);
+            }
+
+            using (SqlConnection cnn = CreateConnection())
+            {
+                using (SqlDataAdapter da = new SqlDataAdapter())
+                {
+                    using (SqlCommand cmd = cnn.BuildUpdateCommand(table, condition, sqlParameters))
+                    {
+                        try
+                        {
+                            da.UpdateCommand = cmd;
+                            cnn.Open(); 
+                            for (int j = 0; j < sqlParameters.Length; j++)
+                            {
+                                DBParameter p = sqlParameters[j];
+                                if (p.IsIdentity)
+                                {
+                                    continue;
+                                }
+                                dt.Rows[(int)condition.Value - 1][p.SqlParameter.SourceColumn] = p.Value;
+                            }
+                            int i = da.Update(_dataSet, table);
+                            cnn.Close();
+                            return i > 0;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception("Lỗi update DataBase : " + ex.Message);
                         }
                     }
 

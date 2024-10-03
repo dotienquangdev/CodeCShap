@@ -67,6 +67,45 @@ namespace BTL
 
         private void button2_Click(object sender, EventArgs e)
         {
+            try
+            {
+                //Nên viết thứ tự parameter theo tứ tự trong DataBase
+                DBConnection.Instance.UpdateDB("tblKhachHang", 
+                new DBParameter // đây là điều kiện update
+                {
+                    SqlParameter = new SqlParameter("@iMaKhachHang", SqlDbType.Int, 0, "iMaKhachHang"),
+                    Value = 1
+                },
+                new DBParameter // dưới cái này là các dữ liệu cần update
+                {
+                    SqlParameter = new SqlParameter("@sHoTen", SqlDbType.NVarChar, 100, "sHoTen"),
+                    Value = "test3"
+                },
+                new DBParameter
+                {
+                    SqlParameter = new SqlParameter("@sSoDienThoai", SqlDbType.NVarChar, 15, "sSoDienThoai"),
+                    Value = "test2"
+                },
+                new DBParameter
+                {
+                    SqlParameter = new SqlParameter("@sDiaChi", SqlDbType.NVarChar, 255, "sDiaChi"),
+                    Value = "test2"
+                },
+                new DBParameter
+                {
+                    SqlParameter = new SqlParameter("@sEmail", SqlDbType.NVarChar, 100, "sEmail"),
+                    Value = "test3"
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            DataTable table = dataGridView1.DataSource as DataTable;
 
         }
     }
