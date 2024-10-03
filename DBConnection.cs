@@ -17,10 +17,6 @@ namespace BTL
 
     public class DBConnection
     {
-        private string DataSource { get; set; }
-
-        public string DataBase { get; set; }
-
         public DataSet DataSet => _dataSet;
         public static DBConnection Instance => _instance;
 
@@ -83,14 +79,18 @@ namespace BTL
                             }
                             da.InsertCommand = cmd;
                             DataRow newRow = dt.NewRow();
-                            foreach (DBParameter p in sqlParameters)
+                            for (int j =  0; j < sqlParameters.Length; j++)
                             {
+                                DBParameter p = sqlParameters[j];
                                 if (p.IsIdentity)
                                 {
-                                    newRow[0] = dt.Rows.Count + 1;
+                                    newRow[j] = dt.Rows.Count + 1;
                                     continue;
                                 }
                                 newRow[p.SqlParameter.SourceColumn] = p.Value;
+                            }
+                            foreach (DBParameter p in sqlParameters)
+                            {
                             }
                             dt.Rows.Add(newRow);
                             cnn.Open();

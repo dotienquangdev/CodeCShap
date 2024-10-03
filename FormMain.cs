@@ -14,6 +14,7 @@ namespace BTL
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            //Bắt buộc để try catch để kiểm tra lỗi khi sử lý với DataBase
             try
             {
                 dataGridView1.DataSource = DBConnection.Instance.SelectDB("tblKhachHang");
@@ -28,12 +29,14 @@ namespace BTL
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //Bắt buộc để try catch để kiểm tra lỗi khi sử lý với DataBase
             try
             {
+                //Nên viết thứ tự parameter theo tứ tự trong DataBase
                 DBConnection.Instance.InsertDB("tblKhachHang", "sp_ThemKhachHang",
                 new DBParameter
                 {
-                    IsIdentity = true,
+                    IsIdentity = true,//Thuộc tính Identity trong DataBase
                 },
                 new DBParameter
                 {
