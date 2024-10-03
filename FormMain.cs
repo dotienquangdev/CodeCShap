@@ -17,7 +17,7 @@ namespace BTL
             //Bắt buộc để try catch để kiểm tra lỗi khi sử lý với DataBase
             try
             {
-                dataGridView1.DataSource = DBConnection.Instance.SelectDB("tblKhachHang");
+                dataGridView1.DataSource = DBConnection.Instance.SelectDB("tblKhachHang").CreateDataView();
             }
             catch (Exception ex)
             {
@@ -78,9 +78,9 @@ namespace BTL
                 },
                 new DBParameter // dưới cái này là các dữ liệu cần update
                 {
-                    SqlParameter = new SqlParameter("@sHoTen", SqlDbType.NVarChar, 100, "sHoTen"),
-                    Value = "test3"
-                },
+                    SqlParameter = new SqlParameter("@bDeleted", SqlDbType.Bit, 0, "bDeleted"),
+                    Value = true
+                }/*,
                 new DBParameter
                 {
                     SqlParameter = new SqlParameter("@sSoDienThoai", SqlDbType.NVarChar, 15, "sSoDienThoai"),
@@ -95,7 +95,7 @@ namespace BTL
                 {
                     SqlParameter = new SqlParameter("@sEmail", SqlDbType.NVarChar, 100, "sEmail"),
                     Value = "test3"
-                });
+                }*/);
             }
             catch (Exception ex)
             {
@@ -105,7 +105,15 @@ namespace BTL
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            DataTable table = dataGridView1.DataSource as DataTable;
+            try
+            {
+                DataView dataView = dataGridView1.DataSource as DataView;
+                dataView.AddRowFilter($"sHoTen LIKE '{textBox1.Text}%'");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
         }
     }

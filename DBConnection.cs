@@ -40,6 +40,7 @@ namespace BTL
                     try
                     {
                         da.SelectCommand = cnn.BuildSelectCommand(table);
+                        _dataSet.Tables[table]?.Clear();
                         cnn.Open();
                         da.Fill(_dataSet, table);
                         cnn.Close();

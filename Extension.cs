@@ -5,6 +5,16 @@ namespace BTL
 {
     public static class Extension
     {
+        public static void AddRowFilter(this DataView dataView, string filter)
+        {
+            dataView.RowFilter = $"bDeleted=0 AND {filter}";
+        }
+
+        public static DataView CreateDataView(this DataTable table)
+        {
+            return new DataView(table) { RowFilter = "bDeleted=0" };
+        }
+
         public static SqlCommand BuildSelectCommand(this SqlConnection conn, string table) 
         {
             return new SqlCommand($"SELECT * FROM {table}", conn);
