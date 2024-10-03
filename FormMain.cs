@@ -28,6 +28,7 @@ namespace BTL
 
         }
 
+        //thêm
         private void button1_Click(object sender, EventArgs e)
         {
             //Bắt buộc để try catch để kiểm tra lỗi khi sử lý với DataBase
@@ -66,6 +67,7 @@ namespace BTL
             }
         }
 
+        //sửa
         private void button2_Click(object sender, EventArgs e)
         {
             try
@@ -104,6 +106,7 @@ namespace BTL
             }
         }
 
+        //tìm
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             try
@@ -118,6 +121,7 @@ namespace BTL
 
         }
 
+        //xóa
         private void button3_Click(object sender, EventArgs e)
         {
             try
