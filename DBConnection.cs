@@ -83,10 +83,12 @@ namespace BTL
                                 }
                                 newRow[p.SqlParameter.SourceColumn] = p.Value;
                             }
+                            newRow["bDeleted"] = false;
                             dt.Rows.Add(newRow);
                             cnn.Open();
                             int i = da.Update(_dataSet, table);
                             cnn.Close();
+                            _dataSet.Tables[table].AcceptChanges();
                             return i > 0;
                         }
                         catch (Exception ex)
@@ -128,6 +130,7 @@ namespace BTL
                             }
                             int i = da.Update(_dataSet, table);
                             cnn.Close();
+                            _dataSet.Tables[table].AcceptChanges();
                             return i > 0;
                         }
                         catch (Exception ex)

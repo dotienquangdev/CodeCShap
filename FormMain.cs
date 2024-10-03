@@ -12,6 +12,7 @@ namespace BTL
             InitializeComponent();
         }
 
+
         private void FormMain_Load(object sender, EventArgs e)
         {
             //Bắt buộc để try catch để kiểm tra lỗi khi sử lý với DataBase
@@ -78,9 +79,9 @@ namespace BTL
                 },
                 new DBParameter // dưới cái này là các dữ liệu cần update
                 {
-                    SqlParameter = new SqlParameter("@bDeleted", SqlDbType.Bit, 0, "bDeleted"),
-                    Value = true
-                }/*,
+                    SqlParameter = new SqlParameter("@sHoTen", SqlDbType.Bit, 0, "sHoTen"),
+                    Value = "test434"
+                },
                 new DBParameter
                 {
                     SqlParameter = new SqlParameter("@sSoDienThoai", SqlDbType.NVarChar, 15, "sSoDienThoai"),
@@ -95,7 +96,7 @@ namespace BTL
                 {
                     SqlParameter = new SqlParameter("@sEmail", SqlDbType.NVarChar, 100, "sEmail"),
                     Value = "test3"
-                }*/);
+                });
             }
             catch (Exception ex)
             {
@@ -115,6 +116,29 @@ namespace BTL
                 MessageBox.Show(ex.Message);
             }
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //Nên viết thứ tự parameter theo tứ tự trong DataBase
+                DBConnection.Instance.UpdateDB("tblKhachHang",
+                new DBParameter // đây là điều kiện update
+                {
+                    SqlParameter = new SqlParameter("@iMaKhachHang", SqlDbType.Int, 0, "iMaKhachHang"),
+                    Value = dataGridView1.CurrentRow.Cells[0].Value
+                },
+                new DBParameter // dưới cái này là các dữ liệu cần update
+                {
+                    SqlParameter = new SqlParameter("@bDeleted", SqlDbType.Bit, 0, "bDeleted"),
+                    Value = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
